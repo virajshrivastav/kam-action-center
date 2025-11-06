@@ -117,10 +117,14 @@ All colors MUST be HSL.
 
 @layer utilities {
   .card-hover {
-    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
   }
   
   .status-badge {
-    @apply px-3 py-1 rounded-full text-xs font-medium transition-all duration-200;
+    @apply px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 shadow-sm;
+  }
+
+  .gradient-border {
+    @apply relative before:absolute before:inset-0 before:rounded-lg before:p-[1px] before:bg-gradient-to-br before:from-primary/20 before:to-transparent;
   }
 }

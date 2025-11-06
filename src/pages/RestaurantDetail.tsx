@@ -4,8 +4,17 @@ import { ActiveDrivesCard } from "@/components/ActiveDrivesCard";
 import { PromosCard } from "@/components/PromosCard";
 import { TasksCard } from "@/components/TasksCard";
 import { NotesCard } from "@/components/NotesCard";
+import { RestaurantHeader } from "@/components/RestaurantHeader";
+import { KPICard } from "@/components/KPICard";
+import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { 
+  TrendingUp, 
+  Target, 
+  Users, 
+  DollarSign,
+  ArrowLeft 
+} from "lucide-react";
 
 // Mock data - in real app, this would come from API
 const mockRestaurantData = {
@@ -65,66 +74,93 @@ const RestaurantDetail = () => {
 
   if (!restaurant) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Restaurant Not Found</h1>
-          <Button onClick={() => navigate("/")}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Button>
+      <DashboardLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4">Restaurant Not Found</h1>
+            <Button onClick={() => navigate("/")}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
+  // Calculate KPIs
+  const completedTasks = restaurant.tasks.filter(t => t.status === "done").length;
+  const completionRate = Math.round((completedTasks / restaurant.tasks.length) * 100);
+
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate("/")}
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">{restaurant.name}</h1>
-            <p className="text-muted-foreground">Restaurant ID: {restaurant.id}</p>
-          </div>
-        </div>
+    <DashboardLayout>
+      <div className="animate-fade-in">
+        {/* Professional Header with Breadcrumbs */}
+        <RestaurantHeader restaurant={restaurant} />
 
-        {/* Top Section - 2 Column Grid */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <RestaurantOverviewCard restaurantData={restaurant} />
-          <ActiveDrivesCard drives={restaurant.drives} />
-        </div>
-
-        {/* Bottom Section - 3 Column Grid */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Column 1 - Promos */}
-          <div className="space-y-6">
-            <PromosCard
+        <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+          {/* KPI Metrics Section */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <KPICard
+              title="Active Drives"
+              value={restaurant.drives.length}
+              change="+2 this month"
+              changeType="positive"
+              icon={TrendingUp}
+            />
+            <KPICard
+              title="Task Completion"
+              value={`${completionRate}%`}
+              change={`${completedTasks}/${restaurant.tasks.length}`}
+              changeType={completionRate >= 50 ? "positive" : "neutral"}
+              icon={Target}
+            />
+            <KPICard
               title="Active Promos"
-              promos={restaurant.activePromos}
+              value={restaurant.activePromos.length}
+              change={`${restaurant.suggestedPromos.length} suggested`}
+              changeType="neutral"
+              icon={Users}
             />
-            <PromosCard
-              title="Suggested Promos"
-              promos={restaurant.suggestedPromos}
-              showActivateButton
+            <KPICard
+              title="Monthly Budget"
+              value={restaurant.adsBudget.split('/')[0]}
+              change="On track"
+              changeType="positive"
+              icon={DollarSign}
             />
           </div>
 
-          {/* Column 2 - Tasks */}
-          <TasksCard tasks={restaurant.tasks} />
+          {/* Overview Section - 2 Column Grid */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <RestaurantOverviewCard restaurantData={restaurant} />
+            <ActiveDrivesCard drives={restaurant.drives} />
+          </div>
 
-          {/* Column 3 - Notes */}
-          <NotesCard restaurantId={restaurant.id} />
+          {/* Action Section - 3 Column Grid */}
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Column 1 - Promos */}
+            <div className="space-y-6">
+              <PromosCard
+                title="Active Promos"
+                promos={restaurant.activePromos}
+              />
+              <PromosCard
+                title="Suggested Promos"
+                promos={restaurant.suggestedPromos}
+                showActivateButton
+              />
+            </div>
+
+            {/* Column 2 - Tasks */}
+            <TasksCard tasks={restaurant.tasks} />
+
+            {/* Column 3 - Notes */}
+            <NotesCard restaurantId={restaurant.id} />
+          </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 

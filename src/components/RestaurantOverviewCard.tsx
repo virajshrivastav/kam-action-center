@@ -23,20 +23,25 @@ export const RestaurantOverviewCard = ({ restaurantData }: RestaurantOverviewCar
   ];
 
   return (
-    <Card className="card-hover">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold">Restaurant Overview</CardTitle>
+    <Card className="card-hover border-primary/20">
+      <CardHeader className="border-b bg-gradient-to-br from-primary/5 to-transparent">
+        <CardTitle className="text-xl font-semibold flex items-center gap-2">
+          <Building2 className="w-5 h-5 text-primary" />
+          Restaurant Overview
+        </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <div className="space-y-3">
           {details.map((detail, index) => {
             const Icon = detail.icon;
             return (
-              <div key={index} className="flex items-start gap-3 p-2 rounded-lg hover:bg-accent/50 transition-colors">
-                <Icon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+              <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent/50 transition-all duration-200 border border-transparent hover:border-border">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Icon className="w-4 h-4 text-primary flex-shrink-0" />
+                </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-muted-foreground">{detail.label}</p>
-                  <p className="font-medium text-foreground truncate">{detail.value}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{detail.label}</p>
+                  <p className="font-semibold text-foreground truncate">{detail.value}</p>
                 </div>
               </div>
             );
